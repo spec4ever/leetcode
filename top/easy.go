@@ -1,20 +1,33 @@
 package top
 
-/*
-No: 206
-*/
-/**
- * Definition for singly-linked list.
- * type ListNode struct {
- *     Val int
- *     Next *ListNode
- * }
- */
-
 type ListNode struct {
 	Val  int
 	Next *ListNode
 }
+
+/*
+No: 1
+*/
+func twoSum(nums []int, target int) []int {
+	if len(nums) < 2 {
+		return nil
+	}
+
+	hashMap := map[int]int{}
+	for k, v := range nums {
+		if index, ok := hashMap[v]; ok {
+			return []int{index, k}
+		} else {
+			hashMap[target-v] = k
+		}
+	}
+
+	return nil
+}
+
+/*
+No: 206
+*/
 
 func reverseList(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {

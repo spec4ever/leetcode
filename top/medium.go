@@ -31,3 +31,37 @@ func lengthOfLIS(nums []int) int {
 
 	return result
 }
+
+/*
+No: 5
+*/
+func longestPalindrome(s string) string {
+
+	if len(s) <= 1 {
+		return s
+	}
+
+	res := string(s[0])
+	for i := 0; i < len(s); i++ {
+		for j := i + 1; j < len(s); j++ {
+			if s[i] == s[j] && (j-i+1) > len(res) {
+				if s[i:j+1] == reverseString(s[i:j+1]) {
+					res = s[i : j+1]
+				}
+			}
+		}
+	}
+
+	return res
+}
+
+func reverseString(s string) string {
+
+	reverseByte := make([]byte, 0)
+
+	for i := len(s) - 1; i >= 0; i-- {
+		reverseByte = append(reverseByte, byte(s[i]))
+	}
+
+	return string(reverseByte)
+}

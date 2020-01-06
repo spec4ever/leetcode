@@ -65,3 +65,86 @@ func reverseString(s string) string {
 
 	return string(reverseByte)
 }
+
+/*
+No: 146
+*/
+type LRUCache struct {
+	CacheKV  map[int]int
+	Capacity int
+	LRUQueue []int
+	LRUMap   map[int]int
+}
+
+func Constructor(capacity int) LRUCache {
+
+	newCache := LRUCache{}
+	if capacity <= 0 {
+		return newCache
+	}
+
+	newCache.CacheKV = make(map[int]int, capacity)
+	newCache.Capacity = capacity
+	newCache.LRUQueue = make([]int, 0)
+	newCache.LRUMap = make(map[int]int, 0)
+
+	return newCache
+}
+
+func (this *LRUCache) Get(key int) int {
+
+	if val, ok := this.CacheKV[key]; ok {
+		//更新队列和index
+		index := this.LRUMap[key]
+		for i := index + 1; i < len(this.LRUQueue); i++ {
+			this.LRUMap[this.LRUQueue[i]]--
+		}
+		this.LRUQueue = append(this.LRUQueue[0:index], this.LRUQueue[index+1:]...)
+		this.LRUQueue = append(this.LRUQueue, key)
+		this.LRUMap[key] = len(this.LRUQueue) - 1
+
+		return val
+	} else {
+		return -1
+	}
+}
+
+func (this *LRUCache) Put(key int, value int) {
+
+	//key存在，更新值、队列、index
+	if _, ok := this.CacheKV[key]; ok {
+		index := this.LRUMap[key]
+		for i := index + 1; i < len(this.LRUQueue); i++ {
+			this.LRUMap[this.LRUQueue[i]]--
+		}
+		this.LRUQueue = append(this.LRUQueue[0:index], this.LRUQueue[index+1:]...)
+		this.LRUQueue = append(this.LRUQueue, key)
+		this.LRUMap[key] = len(this.LRUQueue) - 1
+
+		this.CacheKV[key] = value
+		return
+	}
+
+	//key不存在，缓存未满，直接存入
+	if len(this.CacheKV) < this.Capacity {
+		this.CacheKV[key] = value
+		this.LRUQueue = append(this.LRUQueue, key)
+	} else {
+		//缓存已满： 删除最老key及queue及map
+		deleteKey := this.LRUQueue[0]
+		delete(this.CacheKV, deleteKey)
+		this.CacheKV[key] = value
+
+		for i := 0; i < len(this.LRUQueue); i++ {
+			this.LRUMap[this.LRUQueue[i]]--
+		}
+		this.LRUQueue = this.LRUQueue[1:]
+		this.LRUQueue = append(this.LRUQueue, key)
+
+		delete(this.LRUMap, deleteKey)
+	}
+
+	//更新index
+	this.LRUMap[key] = len(this.LRUQueue) - 1
+	return
+}

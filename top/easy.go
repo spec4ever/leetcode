@@ -48,6 +48,7 @@ func reverseList(head *ListNode) *ListNode {
 
 /*
 No: 21
+思路： 递归，过程+终止
 */
 func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 
@@ -66,4 +67,35 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 		l2.Next = mergeTwoLists(l1, l2.Next)
 		return l2
 	}
+}
+
+/*
+No: 21
+思路： 迭代，头结点便于返回
+*/
+func mergeTwoListsIter(l1 *ListNode, l2 *ListNode) *ListNode {
+
+	var head, cur *ListNode
+
+	head = &ListNode{Val: -1, Next: nil}
+	cur = head
+
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val {
+			cur.Next = l1
+			l1 = l1.Next
+		} else {
+			cur.Next = l2
+			l2 = l2.Next
+		}
+		cur = cur.Next
+	}
+
+	if l1 == nil {
+		cur.Next = l2
+	} else {
+		cur.Next = l1
+	}
+
+	return head.Next
 }

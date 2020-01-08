@@ -69,41 +69,48 @@ func reverseString(s string) string {
 /*
 No: 146
 */
+type CacheNode struct {
+	Key int
+	Val int
+	Pre *CacheNode
+	Nxt *CacheNode
+}
+
 type LRUCache struct {
-	CacheKV  map[int]int
-	Capacity int
-	LRUQueue []int
-	LRUMap   map[int]int
+	HashMap map[int]*CacheNode
+	Head    *CacheNode
+	Tail    *CacheNode
+	Cap     int
 }
 
 func Constructor(capacity int) LRUCache {
-
-	newCache := LRUCache{}
-	if capacity <= 0 {
-		return newCache
+	if capacity < 1 {
+		return LRUCache{}
 	}
 
-	newCache.CacheKV = make(map[int]int, capacity)
-	newCache.Capacity = capacity
-	newCache.LRUQueue = make([]int, 0)
-	newCache.LRUMap = make(map[int]int, 0)
+	head := &CacheNode{-1, -1, nil, nil}
+	tail := &CacheNode{-1, -1, nil, nil}
 
-	return newCache
+	head.Nxt = tail
+	tail.Pre = head
+	hashMap := make(map[int]*CacheNode, capacity)
+
+	return LRUCache{hashMap, head, tail, capacity}
 }
 
 func (this *LRUCache) Get(key int) int {
+	//key存在: 放尾部
+	if val, ok := this.HashMap[key]; ok {
+		val.Pre.Nxt = val.Nxt
+		val.Nxt.Pre = val.Pre
 
-	if val, ok := this.CacheKV[key]; ok {
-		//更新队列和index
-		index := this.LRUMap[key]
-		for i := index + 1; i < len(this.LRUQueue); i++ {
-			this.LRUMap[this.LRUQueue[i]]--
-		}
-		this.LRUQueue = append(this.LRUQueue[0:index], this.LRUQueue[index+1:]...)
-		this.LRUQueue = append(this.LRUQueue, key)
-		this.LRUMap[key] = len(this.LRUQueue) - 1
+		//放尾部
+		this.Tail.Pre.Nxt = val
+		val.Pre = this.Tail.Pre
+		val.Nxt = this.Tail
+		this.Tail.Pre = val
 
-		return val
+		return val.Val
 	} else {
 		return -1
 	}
@@ -111,40 +118,44 @@ func (this *LRUCache) Get(key int) int {
 
 func (this *LRUCache) Put(key int, value int) {
 
-	//key存在，更新值、队列、index
-	if _, ok := this.CacheKV[key]; ok {
-		index := this.LRUMap[key]
-		for i := index + 1; i < len(this.LRUQueue); i++ {
-			this.LRUMap[this.LRUQueue[i]]--
-		}
-		this.LRUQueue = append(this.LRUQueue[0:index], this.LRUQueue[index+1:]...)
-		this.LRUQueue = append(this.LRUQueue, key)
-		this.LRUMap[key] = len(this.LRUQueue) - 1
+	//key存在
+	if val, ok := this.HashMap[key]; ok {
+		val.Pre.Nxt = val.Nxt
+		val.Nxt.Pre = val.Pre
+		//放尾部
+		this.Tail.Pre.Nxt = val
+		val.Pre = this.Tail.Pre
+		val.Nxt = this.Tail
+		this.Tail.Pre = val
+		//更新值
+		val.Val = value
 
-		this.CacheKV[key] = value
 		return
 	}
 
-	//key不存在，缓存未满，直接存入
-	if len(this.CacheKV) < this.Capacity {
-		this.CacheKV[key] = value
-		this.LRUQueue = append(this.LRUQueue, key)
-	} else {
-		//缓存已满： 删除最老key及queue及map
-		deleteKey := this.LRUQueue[0]
-		delete(this.CacheKV, deleteKey)
-		this.CacheKV[key] = value
-
-		for i := 0; i < len(this.LRUQueue); i++ {
-			this.LRUMap[this.LRUQueue[i]]--
-		}
-		this.LRUQueue = this.LRUQueue[1:]
-		this.LRUQueue = append(this.LRUQueue, key)
-
-		delete(this.LRUMap, deleteKey)
+	//key不存在：溢出删头部
+	if len(this.HashMap) >= this.Cap {
+		toBeDelNode := this.Head.Nxt
+		this.Head.Nxt = toBeDelNode.Nxt
+		toBeDelNode.Nxt.Pre = this.Head
+		delete(this.HashMap, toBeDelNode.Key)
 	}
 
-	//更新index
-	this.LRUMap[key] = len(this.LRUQueue) - 1
+	//建节点
+	newNode := &CacheNode{key, value, nil, nil}
+	//放尾部
+	this.Tail.Pre.Nxt = newNode
+	newNode.Pre = this.Tail.Pre
+	newNode.Nxt = this.Tail
+	this.Tail.Pre = newNode
+	this.HashMap[key] = newNode
+
 	return
 }
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * obj := Constructor(capacity);
+ * param_1 := obj.Get(key);
+ * obj.Put(key,value);
+ */

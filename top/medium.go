@@ -1,5 +1,10 @@
 package top
 
+import (
+	"bytes"
+	"encoding/gob"
+)
+
 /*
 No: 300
 思路： dp三板斧：状态定义（包含初始状态），状态转移，返回值
@@ -159,3 +164,55 @@ func (this *LRUCache) Put(key int, value int) {
  * param_1 := obj.Get(key);
  * obj.Put(key,value);
  */
+
+/*
+No: 46
+思路： 回溯三板斧：路径，选择列表，结束条件； 选择->递归回溯->撤销选择
+*/
+
+func permute(nums []int) [][]int {
+	ans := [][]int{}
+	path := []int{}
+
+	traceBack(nums, path, &ans)
+
+	return ans
+}
+
+func traceBack(nums []int, path []int, ans *[][]int) {
+	//叶子节点，终止
+	if len(path) == len(nums) {
+		pathAppend := &[]int{}
+		deepCopy(pathAppend, path)
+		*ans = append(*ans, *pathAppend)
+		return
+	}
+
+	//选择列表遍历
+	for _, v := range nums {
+		if !inSlice(v, path) {
+			//选择->递归回溯->撤销选择
+			path = append(path, v)
+			traceBack(nums, path, ans)
+			path = path[:len(path)-1]
+		}
+	}
+}
+
+func inSlice(num int, nums []int) bool {
+	for _, v := range nums {
+		if num == v {
+			return true
+		}
+	}
+
+	return false
+}
+
+func deepCopy(dst, src interface{}) error {
+	var buf bytes.Buffer
+	if err := gob.NewEncoder(&buf).Encode(src); err != nil {
+		return err
+	}
+	return gob.NewDecoder(bytes.NewBuffer(buf.Bytes())).Decode(dst)
+}

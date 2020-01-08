@@ -57,3 +57,21 @@ func Obj2String(data interface{}) string {
 	dataByte, _ := json.Marshal(data)
 	return string(dataByte)
 }
+
+func TestPermute(t *testing.T) {
+	ans := permute([]int{1, 2, 3, 4})
+
+	fmt.Println(ans)
+}
+
+func TestDeepCopy(t *testing.T) {
+	a := []int{1, 2, 3}
+	var b []int
+	if err := deepCopy(&b, a); err != nil {
+		fmt.Println(err)
+		return
+	}
+	a[0] = 2
+
+	fmt.Println(b)
+}

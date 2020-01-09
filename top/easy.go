@@ -99,3 +99,44 @@ func mergeTwoListsIter(l1 *ListNode, l2 *ListNode) *ListNode {
 
 	return head.Next
 }
+
+/*
+No: 88 合并两个有序数组
+*/
+/*
+输入:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+
+输出: [1,2,2,3,5,6]
+*/
+func merge(nums1 []int, m int, nums2 []int, n int) {
+	if n == 0 {
+		return
+	}
+
+	if m == 0 {
+		for i := 0; i < n; i++ {
+			nums1[i] = nums2[i]
+		}
+		return
+	}
+
+	mPointer := m
+	nPointer := n
+	for mPointer > 0 && nPointer > 0 {
+		if nums1[mPointer-1] < nums2[nPointer-1] {
+			nums1[mPointer+nPointer-1] = nums2[nPointer-1]
+			nPointer--
+		} else {
+			nums1[mPointer+nPointer-1] = nums1[mPointer-1]
+			mPointer--
+		}
+		if mPointer == 0 && nPointer > 0 {
+			for nPointer > 0 {
+				nums1[mPointer+nPointer-1] = nums2[nPointer-1]
+				nPointer--
+			}
+		}
+	}
+}

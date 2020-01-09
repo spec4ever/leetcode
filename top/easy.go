@@ -140,3 +140,33 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 		}
 	}
 }
+
+/*
+No: 202 快乐数
+思路： 快乐数最后是1循环，非快乐数也会基于某个数循环，快慢指针破循环，好处是无须用额外存储空间
+*/
+func isHappy(n int) bool {
+
+	slow := bitSquareSum(n)
+	fast := bitSquareSum(bitSquareSum(n))
+	for slow != fast {
+		slow = bitSquareSum(slow)
+		fast = bitSquareSum(bitSquareSum(fast))
+	}
+
+	if slow == 1 {
+		return true
+	}
+
+	return false
+
+}
+func bitSquareSum(n int) int {
+	sum := 0
+	for n != 0 {
+		sum += (n % 10) * (n % 10)
+		n = n / 10
+	}
+
+	return sum
+}

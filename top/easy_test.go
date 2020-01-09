@@ -21,3 +21,7 @@ func TestEmptySlice(t *testing.T) {
 
 	fmt.Println(a[:0])
 }
+
+func TestIsHappy(t *testing.T) {
+	fmt.Println(isHappy(19))
+}

@@ -25,3 +25,7 @@ func TestEmptySlice(t *testing.T) {
 func TestIsHappy(t *testing.T) {
 	fmt.Println(isHappy(19))
 }
+
+func TestCountPrimes(t *testing.T) {
+	fmt.Println(countPrimes(10))
+}

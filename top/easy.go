@@ -1,5 +1,10 @@
 package top
 
+import (
+	"math"
+	"strconv"
+)
+
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -169,4 +174,12 @@ func bitSquareSum(n int) int {
 	}
 
 	return sum
+}
+
+/*
+No: 204 计数质数
+
+*/
+func countPrimes(n int) int {
+
 }

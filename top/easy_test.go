@@ -27,5 +27,5 @@ func TestIsHappy(t *testing.T) {
 }
 
 func TestCountPrimes(t *testing.T) {
-	fmt.Println(countPrimes(10))
+	fmt.Println(countPrimes(10000000))
 }

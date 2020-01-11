@@ -1,10 +1,5 @@
 package top
 
-import (
-	"math"
-	"strconv"
-)
-
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -178,8 +173,27 @@ func bitSquareSum(n int) int {
 
 /*
 No: 204 计数质数
-
+思路： 排除法： 每个数的倍数不为质数
 */
 func countPrimes(n int) int {
+	isPrime := make(map[int]bool, 0)
+	for i := 2; i < n; i++ {
+		if _, ok := isPrime[i]; !ok {
+			isPrime[i] = true
+		}
+		if isPrime[i] {
+			for j := i * i; j < n; j += i {
+				isPrime[j] = false
+			}
+		}
+	}
 
+	count := 0
+	for _, v := range isPrime {
+		if v {
+			count++
+		}
+	}
+
+	return count
 }

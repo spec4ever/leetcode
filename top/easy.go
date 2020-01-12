@@ -197,3 +197,40 @@ func countPrimes(n int) int {
 
 	return count
 }
+
+/*
+No: 20 有效的括号
+'('，')'，'{'，'}'，'['，']'
+*/
+func isValid(s string) bool {
+	if s == "" {
+		return true
+	}
+	leftStack := []string{}
+
+	for i := 0; i < len(s); i++ {
+		switch string(s[i]) {
+		case "{":
+			leftStack = append(leftStack, "}")
+			continue
+		case "(":
+			leftStack = append(leftStack, ")")
+			continue
+		case "[":
+			leftStack = append(leftStack, "]")
+			continue
+		}
+		//是否匹配
+		if len(leftStack) > 0 && string(s[i]) == leftStack[len(leftStack)-1] {
+			leftStack = leftStack[:len(leftStack)-1]
+		} else {
+			return false
+		}
+	}
+
+	if len(leftStack) == 0 {
+		return true
+	}
+
+	return false
+}

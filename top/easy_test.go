@@ -29,3 +29,7 @@ func TestIsHappy(t *testing.T) {
 func TestCountPrimes(t *testing.T) {
 	fmt.Println(countPrimes(10000000))
 }
+
+func TestIsValid(t *testing.T) {
+	fmt.Println(isValid("{{}}}"))
+}

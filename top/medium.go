@@ -216,3 +216,26 @@ func deepCopy(dst, src interface{}) error {
 	}
 	return gob.NewDecoder(bytes.NewBuffer(buf.Bytes())).Decode(dst)
 }
+
+/*
+No: 279 完全平方数
+dp[i] = min{dp[i - j * j] for j in [0,sqrt(i))}
+*/
+func numSquares(n int) int {
+
+	dp := []int{}
+	dp = append(dp, []int{0, 1}...)
+
+	for i := 2; i < n+1; i++ {
+		dp = append(dp, i)
+		for j := 1; j*j <= i; j++ {
+			if dp[i-j*j]+1 < dp[i] {
+				dp[i] = dp[i-j*j] + 1
+			}
+		}
+
+	}
+
+	return dp[n]
+
+}

@@ -42,3 +42,50 @@ func trap(height []int) int {
 
 	return sum
 }
+
+/*
+No: 149 直线上最多的点
+ [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+*/
+func maxPoints(points [][]int) int {
+	if len(points) == 0 {
+		return 0
+	}
+	if len(points) <= 2 {
+		return 1
+	}
+
+	ans := 1
+	hashMap := map[string]int{} //key为最大公约数斜率string
+
+	for i := 0; i < len(points); i++ {
+		for j := i + 1; j < len(points); j++ {
+			kSharp := twoPointsK(points[j], points[i])
+			hashMap[kSharp]++
+		}
+	}
+
+	for _, v := range hashMap {
+		if v > ans {
+			ans = v
+		}
+	}
+
+	return ans
+}
+
+func twoPointsK(a, b []int) string {
+	deltaY := b[1] - a[1]
+	deltaX := b[0] - a[0]
+
+	return string(deltaY + deltaX)
+}
+
+func gcdTwoNum(a, b int) int {
+
+	for a != 0 {
+		a, b = b%a, a
+	}
+
+	return b
+}

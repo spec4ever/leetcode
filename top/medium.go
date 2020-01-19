@@ -3,6 +3,7 @@ package top
 import (
 	"bytes"
 	"encoding/gob"
+	"sort"
 )
 
 /*
@@ -238,4 +239,80 @@ func numSquares(n int) int {
 
 	return dp[n]
 
+}
+
+/*
+No: 152 乘积最大子序列
+*/
+func maxProduct(nums []int) int {
+	if len(nums) == 1 {
+		return nums[0]
+	}
+
+	maxRes := 1
+	tmpRes, tmpResMinus := 1, 1
+	for i := 0; i < len(nums); i++ {
+		if nums[i] == 0 {
+			if tmpRes < 0 {
+				maxRes = 0
+			} else {
+				maxRes = tmpRes
+			}
+			tmpRes = 1
+			tmpResMinus = 1
+		} else if nums[i] < 0 {
+			tmpResMinus = nums[i] * tmpResMinus
+			tmpRes = tmpRes * nums[i]
+			if tmpResMinus > maxRes {
+				maxRes = tmpResMinus
+				tmpRes = tmpResMinus
+			} else {
+				if tmpRes > maxRes {
+					maxRes = tmpRes
+				}
+				tmpRes = 1
+			}
+		} else {
+			tmpRes *= nums[i]
+			tmpResMinus *= nums[i]
+			if tmpRes > maxRes {
+				maxRes = tmpRes
+			}
+		}
+	}
+
+	return maxRes
+}
+
+/*
+No: 158  排序链表
+*/
+
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func sortList(head *ListNode) *ListNode {
+
+	valList := []int{}
+	cur := head
+	for cur != nil {
+		valList = append(valList, cur.Val)
+		cur = cur.Next
+	}
+
+	cur = head
+	sort.Ints(valList)
+	i := 0
+
+	for cur != nil {
+		cur.Val = valList[i]
+		cur = cur.Next
+		i++
+	}
+
+	return head
 }

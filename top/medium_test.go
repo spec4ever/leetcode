@@ -75,3 +75,7 @@ func TestDeepCopy(t *testing.T) {
 
 	fmt.Println(b)
 }
+
+func TestMaxProduct(t *testing.T) {
+	fmt.Println(maxProduct([]int{-2, 0, -1}))
+}
